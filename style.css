@@ -491,12 +491,7 @@ body {
 @media (min-width: 768px) {
     .contact-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
     .contact-message { grid-column: 1 / -1; }
-
-    .timeline { padding-left: 20px; }
-    .tl-dot { left: -16px; width: 7px; height: 7px; }
-
-    .footer-inner { font-size: 11px; gap: 12px; }
 }
