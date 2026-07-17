@@ -98,7 +98,7 @@
             <!-- 按钮 -->
             <div class="hero-links">
                 <a href="https://github.com/luhong123" target="_blank" class="hero-link">GitHub</a>
-                <a href="mailto:ye33445200@qq.com" class="hero-link primary">✉️ 联系我</a>
+                <button onclick="showEmailModal()" class="hero-link primary">✉️ 联系我</button>
             </div>
 
             <div class="scroll-hint">
@@ -301,5 +301,21 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- Email 弹窗 -->
+    <div id="email-modal" class="email-modal" onclick="closeEmailModal(event)">
+        <div class="email-dialog" onclick="event.stopPropagation()">
+            <div class="email-icon">✉️</div>
+            <h3>我的邮箱</h3>
+            <p class="email-address">ye33445200@qq.com</p>
+            <div class="email-actions">
+                <button class="email-btn primary" onclick="copyEmail()">
+                    <span id="copy-text">📋 复制邮箱</span>
+                </button>
+                <a href="mailto:ye33445200@qq.com" class="email-btn">📧 打开邮箱</a>
+            </div>
+            <button class="email-close" onclick="closeEmailModal()">✕</button>
+        </div>
+    </div>
 </body>
 </html>

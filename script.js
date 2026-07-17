@@ -57,3 +57,31 @@ document.querySelectorAll('.glass-card').forEach(card => {
         card.style.transform = '';
     });
 });
+
+// ============================================
+// Email 弹窗
+// ============================================
+
+function showEmailModal() {
+    document.getElementById('email-modal').classList.add('show');
+}
+
+function closeEmailModal(e) {
+    if (e && e.target !== document.getElementById('email-modal')) return;
+    document.getElementById('email-modal').classList.remove('show');
+}
+
+function copyEmail() {
+    navigator.clipboard.writeText('ye33445200@qq.com').then(() => {
+        const btn = document.getElementById('copy-text');
+        btn.textContent = '✅ 已复制';
+        setTimeout(() => { btn.textContent = '📋 复制邮箱'; }, 2000);
+    });
+}
+
+// ESC 关闭弹窗
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.getElementById('email-modal').classList.remove('show');
+    }
+});
