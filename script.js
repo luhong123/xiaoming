@@ -85,27 +85,3 @@ document.addEventListener('keydown', (e) => {
         document.getElementById('email-modal').classList.remove('show');
     }
 });
-
-// ============================================
-// 雷姆鼠标跟随 — 图片微倾斜朝鼠标方向
-// ============================================
-
-const remChan = document.getElementById('rem-chan');
-
-document.addEventListener('mousemove', (e) => {
-    const rect = remChan.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    // 整体微倾斜 + 微偏移朝鼠标方向
-    const tiltX = (dy / Math.max(dist, 1)) * 5;
-    const tiltY = (dx / Math.max(dist, 1)) * 5;
-    const shiftX = (dx / Math.max(dist, 1)) * 4;
-    const shiftY = (dy / Math.max(dist, 1)) * 2;
-
-    remChan.style.transform = `translate(${shiftX}px, ${shiftY}px) rotateX(${-tiltX * 0.4}deg) rotateY(${tiltY * 0.4}deg)`;
-});

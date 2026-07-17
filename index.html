@@ -378,10 +378,35 @@
         </div>
     </footer>
 
-    <!-- 右下角雷姆 -->
-    <div id="rem-chan" class="rem-chan">
-        <img src="rem.png" alt="Rem" class="rem-img">
-    </div>
+    <!-- Live2D 看板娘 -->
+    <script src="/live2dw/lib/L2Dwidget.min.js"></script>
+    <script>
+        L2Dwidget.init({
+            pluginRootPath: 'live2dw/',
+            pluginJsPath: 'lib/',
+            pluginModelPath: 'assets/',
+            tagMode: false,
+            log: false,
+            model: {
+                jsonPath: '/live2dw/assets/shizuku.model.json'
+            },
+            display: {
+                position: 'right',
+                width: 200,
+                height: 400,
+                hOffset: 0,
+                vOffset: -20
+            },
+            mobile: {
+                show: true,
+                scale: 0.5
+            },
+            react: {
+                opacity: 0.7,
+                opacityDefault: 0.7
+            }
+        });
+    </script>
 
     <script src="script.js"></script>
 
