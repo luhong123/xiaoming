@@ -42,12 +42,12 @@ body {
     filter: blur(120px);
     pointer-events: none;
     z-index: 0;
-    opacity: 0.15;
+    opacity: 0.25;
     animation: orbFloat 20s ease-in-out infinite;
 }
-.orb-1 { width: 600px; height: 600px; background: var(--purple); top: -200px; left: -100px; }
-.orb-2 { width: 500px; height: 500px; background: var(--blue); bottom: -200px; right: -100px; animation-delay: -7s; }
-.orb-3 { width: 400px; height: 400px; background: var(--pink); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -14s; }
+.orb-1 { width: 700px; height: 700px; background: var(--purple); top: -250px; left: -150px; }
+.orb-2 { width: 600px; height: 600px; background: var(--blue); bottom: -250px; right: -150px; animation-delay: -7s; }
+.orb-3 { width: 500px; height: 500px; background: var(--pink); top: 40%; left: 40%; animation-delay: -14s; }
 
 @keyframes orbFloat {
     0%, 100% { transform: translate(0, 0) scale(1); }
@@ -64,6 +64,14 @@ body {
     background-size: 60px 60px;
     mask-image: radial-gradient(ellipse at center, black 40%, transparent 70%);
     -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 70%);
+}
+
+/* 噪点纹理叠加，提升质感 */
+body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ========== 导航 ========== */
@@ -127,7 +135,13 @@ body {
 
 /* ========== HOME ========== */
 .home-layout { }
-.home-hero { text-align: center; margin-bottom: 20px; }
+.home-hero { text-align: center; margin-bottom: 24px; position: relative; }
+.hero-glow {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(168,85,247,0.08), rgba(59,130,246,0.05), transparent 70%);
+    pointer-events: none; z-index: -1;
+}
 .avatar-ring {
     display: inline-block;
     padding: 3px;
@@ -135,13 +149,34 @@ body {
     background: var(--gradient);
     margin-bottom: 20px;
     animation: orbFloat 8s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(168,85,247,0.3));
 }
 .avatar {
     width: 96px; height: 96px;
     border-radius: 50%;
     background: var(--bg);
     display: flex; align-items: center; justify-content: center;
-    font-size: 44px;
+    overflow: hidden;
+}
+.hero-status {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    font-size: 13px; color: var(--text-dim);
+    margin-top: 8px;
+}
+.status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #27c93f;
+    box-shadow: 0 0 6px rgba(39,201,63,0.5);
+    animation: statusPulse 2s ease-in-out infinite;
+}
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
 }
 .hero-name {
     font-size: clamp(32px, 5.5vw, 52px);
@@ -171,11 +206,29 @@ body {
 }
 .home-intro strong { color: var(--text); font-weight: 600; }
 
-/* 贴纸墙 */
-.sticker-wall {
-    display: flex; flex-wrap: wrap; justify-content: center;
-    gap: 10px; margin: 0 0 28px;
-    perspective: 600px;
+/* 技术矩阵 4 卡片 */
+.home-tech-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 0 0 28px;
+}
+.tech-card {
+    padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 12px;
+}
+.tech-card h3 {
+    font-size: 15px; font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    display: flex; align-items: center; gap: 6px;
+}
+.tech-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+}
+.tech-tags .sticker {
+    padding: 5px 12px;
+    font-size: 12px;
 }
 .sticker {
     display: inline-block;
@@ -255,13 +308,15 @@ body {
 
 /* 高亮数据条 */
 .home-highlights {
-    display: flex; justify-content: center; gap: 32px;
-    margin-bottom: 28px; flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
 }
-.highlight-item {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 10px 16px;
-    border-radius: var(--radius-sm);
+.highlight-card {
+    text-align: center;
+    padding: 16px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
 .hl-num {
     font-size: clamp(20px, 3vw, 28px);
@@ -274,7 +329,6 @@ body {
 .hl-label {
     font-size: 12px; color: var(--text-dim);
     font-weight: 500; letter-spacing: 0.5px;
-    margin-top: 2px;
 }
 
 /* 按钮 */
@@ -318,11 +372,17 @@ body {
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
     pointer-events: none;
 }
+.glass-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+    pointer-events: none;
+}
 .glass-card:hover {
     background: var(--glass-hover);
     border-color: rgba(255,255,255,0.1);
     transform: translateY(-2px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.04);
 }
 .glass-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
 .glass-card p  { font-size: 14px; color: var(--text-dim); line-height: 1.7; }
@@ -402,7 +462,6 @@ body {
 .tag:nth-child(10) { animation: stickerBounce 2.9s ease-in-out infinite; animation-delay: -1.8s; }
 .tag:nth-child(11) { animation: stickerPulse 3.1s ease-in-out infinite; animation-delay: -0.5s; }
 .tag:nth-child(12) { animation: stickerWobble 2.7s ease-in-out infinite; animation-delay: -1.3s; }
-.tag:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); box-shadow: 0 0 16px rgba(168,85,247,0.1); transform: scale(1.1); z-index: 2; }
 .tag:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); box-shadow: 0 0 16px rgba(168,85,247,0.1); transform: scale(1.1); z-index: 2; }
 
 /* ========== Projects ========== */
@@ -558,7 +617,10 @@ body {
     .about-grid { grid-template-columns: 1fr; }
     .projects-grid { grid-template-columns: 1fr; }
     .hero-name { font-size: 32px; }
-    .avatar { width: 80px; height: 80px; font-size: 36px; }
+    .avatar { width: 80px; height: 80px; }
+    .avatar svg { width: 40px; height: 40px; }
+    .home-tech-grid { grid-template-columns: 1fr; }
+    .home-highlights { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (min-width: 768px) {
@@ -570,9 +632,10 @@ body {
 }
 
 @media (min-width: 1024px) {
-    .sticker { padding: 7px 16px; font-size: 14px; }
+    .tech-tags .sticker { padding: 6px 14px; font-size: 13px; }
     .home-intro { font-size: 17px; }
     .projects-grid { grid-template-columns: repeat(3, 1fr); }
     .hero-name { font-size: 56px; }
-    .avatar { width: 108px; height: 108px; font-size: 52px; }
+    .avatar { width: 108px; height: 108px; }
+    .avatar svg { width: 54px; height: 54px; }
 }
