@@ -87,31 +87,25 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ============================================
-// 雷姆鼠标跟随
+// 雷姆鼠标跟随 — 图片微倾斜朝鼠标方向
 // ============================================
 
 const remChan = document.getElementById('rem-chan');
-const remEyes = document.querySelectorAll('.rem-iris, .rem-iris-inner, .rem-pupil, .rem-highlight');
 
 document.addEventListener('mousemove', (e) => {
     const rect = remChan.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
 
-    // 雷姆整体微倾斜朝鼠标方向
     const dx = e.clientX - cx;
     const dy = e.clientY - cy;
     const dist = Math.sqrt(dx * dx + dy * dy);
-    const maxTilt = 8;
-    const tiltX = (dy / Math.max(dist, 1)) * maxTilt;
-    const tiltY = (dx / Math.max(dist, 1)) * maxTilt;
-    remChan.style.transform = `rotateX(${-tiltX * 0.3}deg) rotateY(${tiltY * 0.3}deg)`;
 
-    // 眼瞳偏移 - 朝鼠标看
-    const eyeOffsetX = dx / Math.max(dist, 1) * 2.5;
-    const eyeOffsetY = dy / Math.max(dist, 1) * 2;
+    // 整体微倾斜 + 微偏移朝鼠标方向
+    const tiltX = (dy / Math.max(dist, 1)) * 5;
+    const tiltY = (dx / Math.max(dist, 1)) * 5;
+    const shiftX = (dx / Math.max(dist, 1)) * 4;
+    const shiftY = (dy / Math.max(dist, 1)) * 2;
 
-    remEyes.forEach(el => {
-        el.style.transform = `translate(${eyeOffsetX}px, ${eyeOffsetY}px)`;
-    });
+    remChan.style.transform = `translate(${shiftX}px, ${shiftY}px) rotateX(${-tiltX * 0.4}deg) rotateY(${tiltY * 0.4}deg)`;
 });
