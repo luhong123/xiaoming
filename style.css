@@ -330,6 +330,35 @@ body {
 .about-grid .glass-card:first-child { grid-column: 1 / -1; }
 .about-intro p { font-size: 15px; margin-bottom: 8px; }
 
+/* 时间线 */
+.timeline-heading {
+    margin-top: 40px; margin-bottom: 20px;
+    font-size: 18px; font-weight: 700; color: var(--text);
+}
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before {
+    content: '';
+    position: absolute; left: 7px; top: 8px; bottom: 8px;
+    width: 1px; background: rgba(255,255,255,0.06);
+}
+.tl-item { position: relative; margin-bottom: 16px; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot {
+    position: absolute; left: -20px; top: 20px;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--gradient);
+}
+.tl-card { padding: 16px 20px; }
+.tl-date {
+    font-size: 12px; font-weight: 600; color: var(--purple);
+    letter-spacing: 0.5px;
+}
+.tl-card h4 {
+    font-size: 16px; font-weight: 700; margin: 4px 0 6px; color: var(--text);
+}
+.tl-card p { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
+.tl-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
 /* ========== Skills ========== */
 .skills-grid { display: flex; flex-direction: column; gap: 16px; }
 .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -426,6 +455,26 @@ body {
 .contact-message .dim { font-size: 13px; color: var(--text-dim); margin-top: 6px; }
 .contact-message strong { color: var(--text); }
 
+/* ========== Footer ========== */
+.footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 99;
+    padding: 10px 20px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    display: flex; justify-content: center;
+    pointer-events: none;
+}
+.footer-inner {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 12px; color: var(--text-dim);
+}
+.footer-inner a {
+    color: var(--text-dim); text-decoration: none;
+    pointer-events: auto;
+    transition: color 0.3s;
+}
+.footer-inner a:hover { color: var(--text); }
+
 /* ========== Responsive ========== */
 @media (max-width: 600px) {
     .nav { padding: 8px 10px; }
@@ -445,4 +494,9 @@ body {
         grid-template-columns: 1fr 1fr;
     }
     .contact-message { grid-column: 1 / -1; }
+
+    .timeline { padding-left: 20px; }
+    .tl-dot { left: -16px; width: 7px; height: 7px; }
+
+    .footer-inner { font-size: 11px; gap: 12px; }
 }
