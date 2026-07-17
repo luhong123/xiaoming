@@ -10,7 +10,6 @@
 
 :root {
     --bg: #0d1117;
-    --terminal-bg: rgba(13, 17, 23, 0.92);
     --green: #00ff41;
     --green-dim: #00cc34;
     --green-dark: rgba(0, 255, 65, 0.12);
@@ -322,6 +321,16 @@ body {
 .help-table .h-desc {
     color: var(--text-dim);
 }
+
+/* ========== 滚动条 ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(0, 255, 65, 0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 65, 0.4); }
+html { scrollbar-color: rgba(0, 255, 65, 0.2) var(--bg); scrollbar-width: thin; }
+
+/* 底部留出足够空间，避免内容被固定输入栏遮挡 */
+#terminal::after { content: ''; display: block; height: 60px; }
 
 /* ========== 响应式 ========== */
 @media (max-width: 600px) {

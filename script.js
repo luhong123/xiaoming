@@ -1,43 +1,45 @@
 // ============================================
-// Matrix 雨滴背景
+// Matrix 雨滴背景 (requestAnimationFrame 优化)
 // ============================================
 (function matrixRain() {
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
+    const FONT_SIZE = 14;
+    const CHARS = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
+    const FADE_ALPHA = 0.05;
 
-    let width, height;
-    let drops = [];
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEF';
+    let width, height, cols, drops;
+    let lastDraw = 0;
+    const INTERVAL = 50; // ms between frames
 
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
-
-        const fontSize = 14;
-        const cols = Math.floor(width / fontSize);
-        drops = [];
-        for (let i = 0; i < cols; i++) {
-            drops[i] = Math.random() * -height / fontSize;
-        }
+        cols = Math.floor(width / FONT_SIZE);
+        drops = new Array(cols).fill(0).map(() => Math.random() * -height / FONT_SIZE);
     }
 
     resize();
     window.addEventListener('resize', resize);
 
-    function draw() {
-        ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
-        ctx.fillRect(0, 0, width, height);
+    function draw(timestamp) {
+        if (timestamp - lastDraw < INTERVAL) {
+            requestAnimationFrame(draw);
+            return;
+        }
+        lastDraw = timestamp;
 
-        const fontSize = 14;
-        ctx.font = fontSize + 'px monospace';
+        ctx.fillStyle = `rgba(13, 17, 23, ${FADE_ALPHA})`;
+        ctx.fillRect(0, 0, width, height);
+        ctx.font = FONT_SIZE + 'px monospace';
         ctx.fillStyle = '#00ff41';
 
         for (let i = 0; i < drops.length; i++) {
-            const char = chars[Math.floor(Math.random() * chars.length)];
-            const x = i * fontSize;
-            const y = drops[i] * fontSize;
+            const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+            const x = i * FONT_SIZE;
+            const y = drops[i] * FONT_SIZE;
 
             ctx.fillText(char, x, y);
 
@@ -46,13 +48,15 @@
             }
             drops[i]++;
         }
+
+        requestAnimationFrame(draw);
     }
 
-    setInterval(draw, 50);
+    requestAnimationFrame(draw);
 })();
 
 // ============================================
-// 打字机动画
+// 打字机动画（最后一行保留不删）
 // ============================================
 (function typeAnimation() {
     const el = document.getElementById('typing-text');
@@ -61,33 +65,31 @@
         'Building things for the web',
         'Welcome to my terminal.'
     ];
+    const LAST_LINE = lines.length - 1;
     let lineIdx = 0;
     let charIdx = 0;
     let isDeleting = false;
-    let currentLine = '';
 
     function type() {
-        if (lineIdx >= lines.length) return;
+        if (lineIdx > LAST_LINE) return;
 
         if (!isDeleting) {
-            currentLine = lines[lineIdx].slice(0, ++charIdx);
-            el.textContent = currentLine;
+            el.textContent = lines[lineIdx].slice(0, ++charIdx);
 
             if (charIdx === lines[lineIdx].length) {
-                // 打完一行，停顿后开始删除
+                // 最后一行打完就停
+                if (lineIdx === LAST_LINE) return;
                 setTimeout(type, 2000);
                 isDeleting = true;
                 return;
             }
             setTimeout(type, 60 + Math.random() * 40);
         } else {
-            currentLine = lines[lineIdx].slice(0, --charIdx);
-            el.textContent = currentLine;
+            el.textContent = lines[lineIdx].slice(0, --charIdx);
 
             if (charIdx === 0) {
                 isDeleting = false;
                 lineIdx++;
-                // 切换到下一行
                 setTimeout(type, 300);
                 return;
             }
@@ -95,7 +97,6 @@
         }
     }
 
-    // 页面加载后稍等再开始
     setTimeout(type, 800);
 })();
 
@@ -105,13 +106,13 @@
 (function terminal() {
     const input = document.getElementById('cmd-input');
     const output = document.getElementById('interactive-output');
-    const terminal = document.getElementById('terminal');
-    const inputLine = document.getElementById('input-line');
+    const terminalEl = document.getElementById('terminal');
 
     const history = [];
     let historyIdx = -1;
     let tempInput = '';
 
+    // 命令注册表
     const commands = {
         help() {
             return `
@@ -146,12 +147,12 @@
 
         clear() {
             output.innerHTML = '';
-            return null; // 不显示任何输出
+            return null;
         },
 
         banner() {
-            const banner = document.querySelector('.banner').textContent;
-            return `<pre style="color:#00ff41;font-size:11px;line-height:1.1;text-shadow:0 0 10px rgba(0,255,65,0.3)">${banner}</pre>`;
+            const el = document.querySelector('.banner');
+            return el ? `<pre style="color:#00ff41;font-size:11px;line-height:1.1;text-shadow:0 0 10px rgba(0,255,65,0.3)">${escHtml(el.textContent)}</pre>` : 'banner not found';
         },
 
         date() {
@@ -163,42 +164,40 @@
         }
     };
 
+    // 提取所有命令名用于 Tab 补全
+    const cmdNames = Object.keys(commands);
+
+    function escHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
     function addOutput(html, isError) {
-        if (html === null) return; // clear 命令
+        if (html === null) return;
         const div = document.createElement('div');
         div.className = 'cmd-output' + (isError ? ' error' : '');
         div.innerHTML = html;
         output.appendChild(div);
-        // 滚动到底部
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        // 确保新输出不被固定栏遮挡
+        div.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
 
     function addCmdLine(cmd) {
         const div = document.createElement('div');
         div.className = 'cmd-line';
-        div.innerHTML = `<span class="prompt">$</span> <span class="typed-cmd">${escapeHtml(cmd)}</span>`;
+        div.innerHTML = `<span class="prompt">$</span> <span class="typed-cmd">${escHtml(cmd)}</span>`;
         output.appendChild(div);
-    }
-
-    function escapeHtml(str) {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
     }
 
     function execute(cmdStr) {
         cmdStr = cmdStr.trim();
         if (!cmdStr) return;
 
-        // 加入历史
         history.push(cmdStr);
         historyIdx = history.length;
         input.value = '';
 
-        // 显示命令行
         addCmdLine(cmdStr);
 
-        // 解析命令和参数
         const parts = cmdStr.split(/\s+/);
         const cmd = parts[0].toLowerCase();
         const args = parts.slice(1).join(' ');
@@ -206,20 +205,18 @@
         if (commands[cmd]) {
             addOutput(commands[cmd](args));
         } else {
-            addOutput(`command not found: ${escapeHtml(cmd)}<br>输入 <span class="cmd-color" style="color:#58a6ff">help</span> 查看可用命令`, true);
+            addOutput(`command not found: ${escHtml(cmd)}<br>输入 <span style="color:#58a6ff">help</span> 查看可用命令`, true);
         }
     }
 
-    // 输入事件
+    // ========== 键盘事件 ==========
     input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             execute(input.value);
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
             if (history.length === 0) return;
-            if (historyIdx === history.length) {
-                tempInput = input.value;
-            }
+            if (historyIdx === history.length) tempInput = input.value;
             if (historyIdx > 0) {
                 historyIdx--;
                 input.value = history[historyIdx];
@@ -233,28 +230,44 @@
                 historyIdx++;
                 input.value = tempInput;
             }
+        } else if (e.key === 'Tab') {
+            e.preventDefault();
+            const val = input.value.toLowerCase();
+            const match = cmdNames.find(c => c.startsWith(val));
+            if (match) input.value = match + ' ';
+        } else if (e.key === 'l' && e.ctrlKey) {
+            e.preventDefault();
+            output.innerHTML = '';
         }
     });
 
-    // 点击终端任意位置聚焦输入框
-    terminal.addEventListener('click', function(e) {
-        if (e.target.tagName !== 'A') {
+    // ========== 焦点管理 ==========
+    // 点终端任意位置聚焦（但允许选中文字和点链接）
+    terminalEl.addEventListener('click', function(e) {
+        const tag = e.target.tagName;
+        if (tag !== 'A' && tag !== 'INPUT') {
             input.focus();
         }
     });
 
-    // 初始聚焦
-    input.focus();
-
-    // 失焦后自动重新聚焦（但允许点击链接）
-    input.addEventListener('blur', function() {
-        setTimeout(() => {
-            if (document.activeElement?.tagName !== 'A') {
-                input.focus();
-            }
-        }, 200);
+    // 只在点击终端外部时尝试回焦（终端内自由操作）
+    document.addEventListener('click', function(e) {
+        if (!terminalEl.contains(e.target)) {
+            // 用户在终端外点击，不回焦
+            return;
+        }
     });
 
-    // 暴露 execute 到全局
-    window.terminalExecute = execute;
+    input.focus();
+
+    // ========== 启动欢迎语 ==========
+    const motd = `╔══════════════════════════════════════════╗
+║  Welcome to Xiao Ming's Terminal       ║
+║  Type <span style="color:#58a6ff">help</span> to see available commands  ║
+╚══════════════════════════════════════════╝`;
+
+    setTimeout(() => {
+        addCmdLine('motd');
+        addOutput(motd);
+    }, 3500); // 等打字机动画差不多结束
 })();
