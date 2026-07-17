@@ -1,0 +1,376 @@
+/* ============================================
+   终端极客风 — 个人主页样式
+   ============================================ */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #0d1117;
+    --terminal-bg: rgba(13, 17, 23, 0.92);
+    --green: #00ff41;
+    --green-dim: #00cc34;
+    --green-dark: rgba(0, 255, 65, 0.12);
+    --text: #c9d1d9;
+    --text-dim: #5c8a6a;
+    --prompt-color: #00ff41;
+    --cmd-color: #58a6ff;
+    --highlight: #ff7b72;
+    --white: #e6edf3;
+    --font: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+    --font-size: 15px;
+    --line-height: 1.65;
+}
+
+html {
+    font-size: var(--font-size);
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: var(--font);
+    line-height: var(--line-height);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
+}
+
+/* ========== Matrix 背景 ========== */
+#matrix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+/* ========== 终端容器 ========== */
+#terminal {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 40px 24px 100px;
+    min-height: 100vh;
+}
+
+/* ========== Banner ASCII Art ========== */
+.banner {
+    color: var(--green);
+    font-size: clamp(9px, 2vw, 13px);
+    line-height: 1.2;
+    margin-bottom: 12px;
+    white-space: pre;
+    overflow-x: auto;
+    text-shadow: 0 0 10px rgba(0, 255, 65, 0.4);
+    user-select: none;
+}
+
+/* ========== Tagline 打字区域 ========== */
+.tagline {
+    margin-bottom: 28px;
+    font-size: 15px;
+    color: var(--text-dim);
+    min-height: 1.5em;
+}
+
+.tagline .prompt {
+    color: var(--prompt-color);
+    margin-right: 4px;
+}
+
+.tagline .cursor {
+    color: var(--green);
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* ========== 内容区块 ========== */
+.block {
+    margin-top: 20px;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.block .prompt {
+    color: var(--prompt-color);
+    margin-right: 6px;
+}
+
+.block .cmd {
+    color: var(--cmd-color);
+}
+
+/* ========== 输出内容 ========== */
+.output {
+    color: var(--text);
+    padding: 4px 0 4px 18px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    border-left: 1px solid var(--green-dark);
+    margin-left: 6px;
+}
+
+.output a {
+    color: var(--cmd-color);
+    text-decoration: none;
+}
+
+.output a:hover {
+    text-decoration: underline;
+}
+
+.output .highlight {
+    color: var(--highlight);
+}
+
+.output .dim {
+    color: var(--text-dim);
+    font-size: 13px;
+}
+
+/* ========== 技能条 ========== */
+.skills .skill-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+    white-space: normal;
+}
+
+.skill-name {
+    width: 80px;
+    flex-shrink: 0;
+    color: var(--text);
+    font-size: 13px;
+    text-align: right;
+}
+
+.bar {
+    flex: 1;
+    height: 14px;
+    background: rgba(0, 255, 65, 0.08);
+    border: 1px solid rgba(0, 255, 65, 0.18);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.bar .fill {
+    height: 100%;
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+    border-radius: 1px;
+    transition: width 0.8s ease;
+}
+
+.pct {
+    width: 36px;
+    flex-shrink: 0;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: left;
+}
+
+/* ========== 项目卡片 ========== */
+.project {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    margin: 4px 0;
+    border: 1px solid rgba(0, 255, 65, 0.08);
+    border-radius: 4px;
+    color: var(--text);
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: normal;
+}
+
+.project:hover {
+    background: rgba(0, 255, 65, 0.05);
+    border-color: rgba(0, 255, 65, 0.3);
+    box-shadow: 0 0 12px rgba(0, 255, 65, 0.08);
+}
+
+.project-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.project strong {
+    color: var(--white);
+}
+
+/* ========== 联系信息 JSON ========== */
+.contact-info {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 2;
+}
+
+.contact-info .key {
+    color: var(--cmd-color);
+}
+
+/* ========== 交互输出区 ========== */
+#interactive-output {
+    margin-top: 4px;
+}
+
+#interactive-output .cmd-line {
+    margin: 8px 0 4px;
+    font-size: 14px;
+}
+
+#interactive-output .cmd-line .prompt {
+    color: var(--prompt-color);
+    margin-right: 6px;
+}
+
+#interactive-output .cmd-line .typed-cmd {
+    color: var(--cmd-color);
+}
+
+#interactive-output .cmd-output {
+    color: var(--text);
+    padding-left: 18px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    white-space: pre-wrap;
+}
+
+#interactive-output .cmd-output.error {
+    color: var(--highlight);
+}
+
+/* ========== 命令输入行 ========== */
+#input-line {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 24px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    background: rgba(13, 17, 23, 0.95);
+    border-top: 1px solid rgba(0, 255, 65, 0.12);
+    z-index: 10;
+    max-width: 820px;
+    margin: 0 auto;
+}
+
+#input-line .prompt {
+    color: var(--prompt-color);
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+#cmd-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    caret-color: transparent;
+}
+
+#cmd-input::placeholder {
+    color: var(--text-dim);
+    opacity: 0.5;
+}
+
+.cursor-inline {
+    color: var(--green);
+    animation: blink 1s step-end infinite;
+    font-size: 15px;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+/* ========== 帮助表格 ========== */
+.help-table {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 16px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.help-table .h-cmd {
+    color: var(--cmd-color);
+}
+
+.help-table .h-desc {
+    color: var(--text-dim);
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 600px) {
+    :root { --font-size: 14px; }
+
+    #terminal {
+        padding: 24px 12px 90px;
+    }
+
+    .banner {
+        font-size: 7px;
+    }
+
+    .tagline {
+        font-size: 13px;
+    }
+
+    .output {
+        font-size: 13px;
+        padding-left: 10px;
+    }
+
+    .skill-name {
+        width: 60px;
+        font-size: 11px;
+    }
+
+    .bar {
+        height: 10px;
+    }
+
+    .pct {
+        width: 28px;
+        font-size: 10px;
+    }
+
+    #input-line {
+        padding: 12px 12px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 400px) {
+    .banner {
+        font-size: 5.5px;
+    }
+
+    .skill-name {
+        width: 50px;
+        font-size: 10px;
+    }
+}

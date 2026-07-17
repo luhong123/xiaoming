@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1117">
+    <title>Xiao Ming | Terminal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+
+    <div id="terminal">
+        <!-- 固定内容区（含banner） -->
+        <div id="static-content">
+<pre class="banner">
+ ██╗  ██╗██╗ █████╗  ██████╗
+ ╚██╗██╔╝██║██╔══██╗██╔═══██╗
+  ╚███╔╝ ██║███████║██║   ██║
+  ██╔██╗ ██║██╔══██║██║   ██║
+ ██╔╝ ██╗██║██║  ██║╚██████╔╝
+ ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝ ╚═════╝
+</pre>
+            <div class="tagline"><span class="prompt">></span> <span id="typing-text"></span><span class="cursor">█</span></div>
+            <div class="block"><span class="prompt">$</span> <span class="cmd">whoami</span></div>
+            <div class="output">你好，我是 <span class="highlight">小明</span> (Xiao Ming)
+一个热爱技术的全栈开发者，专注于 Web 开发和开源项目。
+喜欢用代码创造实用工具，探索有趣的技术方案。</div>
+            <div class="block"><span class="prompt">$</span> <span class="cmd">cat skills.txt</span></div>
+            <div class="output skills">
+                <div class="skill-row"><span class="skill-name">JavaScript</span> <span class="bar"><span class="fill" style="width:90%"></span></span> <span class="pct">90%</span></div>
+                <div class="skill-row"><span class="skill-name">React</span>     <span class="bar"><span class="fill" style="width:80%"></span></span> <span class="pct">80%</span></div>
+                <div class="skill-row"><span class="skill-name">Node.js</span>   <span class="bar"><span class="fill" style="width:75%"></span></span> <span class="pct">75%</span></div>
+                <div class="skill-row"><span class="skill-name">Python</span>    <span class="bar"><span class="fill" style="width:70%"></span></span> <span class="pct">70%</span></div>
+                <div class="skill-row"><span class="skill-name">Git</span>       <span class="bar"><span class="fill" style="width:85%"></span></span> <span class="pct">85%</span></div>
+                <div class="skill-row"><span class="skill-name">Docker</span>    <span class="bar"><span class="fill" style="width:60%"></span></span> <span class="pct">60%</span></div>
+            </div>
+            <div class="block"><span class="prompt">$</span> <span class="cmd">ls projects/</span></div>
+            <div class="output">
+                <a href="https://luhong123.github.io/baby-sleep-tracker/" target="_blank" class="project">
+                    <span class="project-icon">📁</span>
+                    <div><strong>baby-sleep-tracker</strong><br><span class="dim">宝宝睡眠记录 PWA — 追踪宝宝每日睡眠，支持统计图表与数据管理</span></div>
+                </a>
+                <div class="project">
+                    <span class="project-icon">📁</span>
+                    <div><strong>personal-homepage</strong><br><span class="dim">终端风格个人主页 — 你正在看的就是它</span></div>
+                </div>
+            </div>
+            <div class="block"><span class="prompt">$</span> <span class="cmd">cat contact.json</span></div>
+            <div class="output contact-info">
+                {
+                <span>  "email":   "<a href="mailto:luhong123@gmail.com">luhong123@gmail.com</a>",</span>
+                <span>  "github":  "<a href="https://github.com/luhong123" target="_blank">github.com/luhong123</a>",</span>
+                <span>  "blog":    "<a href="#" target="_blank">coming soon</a>"</span>
+                }
+            </div>
+        </div>
+
+        <!-- 交互命令输出区 -->
+        <div id="interactive-output"></div>
+
+        <!-- 命令输入行 -->
+        <div id="input-line">
+            <span class="prompt">$</span>
+            <input type="text" id="cmd-input" spellcheck="false" autocomplete="off" autocapitalize="off">
+            <span class="cursor-inline">█</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
