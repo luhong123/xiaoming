@@ -10,7 +10,7 @@
 
     let width, height, cols, drops;
     let lastDraw = 0;
-    const INTERVAL = 50; // ms between frames
+    const INTERVAL = 50;
 
     function resize() {
         width = window.innerWidth;
@@ -31,7 +31,7 @@
         }
         lastDraw = timestamp;
 
-        ctx.fillStyle = `rgba(13, 17, 23, ${FADE_ALPHA})`;
+        ctx.fillStyle = `rgba(10, 10, 10, ${FADE_ALPHA})`;
         ctx.fillRect(0, 0, width, height);
         ctx.font = FONT_SIZE + 'px monospace';
         ctx.fillStyle = '#00ff41';
@@ -61,9 +61,10 @@
 (function typeAnimation() {
     const el = document.getElementById('typing-text');
     const lines = [
-        'Full Stack Developer',
-        'Building things for the web',
-        'Welcome to my terminal.'
+        'AI + DevOps + Full Stack Developer',
+        'Building tools with code & intelligence',
+        'Welcome to my terminal.',
+        'Type help to get started.'
     ];
     const LAST_LINE = lines.length - 1;
     let lineIdx = 0;
@@ -77,13 +78,12 @@
             el.textContent = lines[lineIdx].slice(0, ++charIdx);
 
             if (charIdx === lines[lineIdx].length) {
-                // 最后一行打完就停
-                if (lineIdx === LAST_LINE) return;
+                if (lineIdx >= LAST_LINE - 1) return; // 最后两行保留
                 setTimeout(type, 2000);
                 isDeleting = true;
                 return;
             }
-            setTimeout(type, 60 + Math.random() * 40);
+            setTimeout(type, 55 + Math.random() * 40);
         } else {
             el.textContent = lines[lineIdx].slice(0, --charIdx);
 
@@ -93,7 +93,7 @@
                 setTimeout(type, 300);
                 return;
             }
-            setTimeout(type, 25 + Math.random() * 20);
+            setTimeout(type, 22 + Math.random() * 20);
         }
     }
 
@@ -112,29 +112,61 @@
     let historyIdx = -1;
     let tempInput = '';
 
-    // 命令注册表
     const commands = {
         help() {
             return `
 <span class="help-table">
-<span class="h-cmd">whoami</span>   <span class="h-desc">关于我</span>
-<span class="h-cmd">skills</span>   <span class="h-desc">技能栈</span>
-<span class="h-cmd">projects</span> <span class="h-desc">项目列表</span>
-<span class="h-cmd">contact</span>  <span class="h-desc">联系方式</span>
-<span class="h-cmd">clear</span>    <span class="h-desc">清屏</span>
-<span class="h-cmd">banner</span>   <span class="h-desc">重新显示 logo</span>
-<span class="h-cmd">date</span>     <span class="h-desc">当前时间</span>
-<span class="h-cmd">echo</span>     <span class="h-desc">回声测试</span>
-<span class="h-cmd">help</span>     <span class="h-desc">显示此帮助</span>
+<span class="h-cmd">whoami</span>          <span class="h-desc">关于我</span>
+<span class="h-cmd">skills</span>          <span class="h-desc">技能栈</span>
+<span class="h-cmd">ai</span>              <span class="h-desc">AI 经验</span>
+<span class="h-cmd">infra / k8s</span>     <span class="h-desc">运维 & 基础设施</span>
+<span class="h-cmd">projects</span>        <span class="h-desc">项目列表</span>
+<span class="h-cmd">contact</span>         <span class="h-desc">联系方式</span>
+<span class="h-cmd">clear</span>           <span class="h-desc">清屏</span>
+<span class="h-cmd">banner</span>          <span class="h-desc">重新显示 logo</span>
+<span class="h-cmd">date</span>            <span class="h-desc">当前时间</span>
+<span class="h-cmd">echo</span>            <span class="h-desc">回声测试</span>
+<span class="h-cmd">help</span>            <span class="h-desc">显示此帮助</span>
 </span>`;
         },
 
         whoami() {
-            return '你好，我是 <span class="highlight">小明</span> (Xiao Ming)<br>全栈开发者 | 开源爱好者 | 终身学习者';
+            return '你好，我是 <span class="highlight">小明</span> (Xiao Ming)<br>AI 应用开发者 | 云原生运维 | 全栈工程师 | 开源爱好者';
+        },
+
+        ai() {
+            return `
+<span class="highlight">> LLM 应用开发</span>
+  熟悉 OpenAI / Claude API，开发过智能对话、代码助手等应用
+  掌握 Prompt Engineering、Function Calling、Agent 编排
+
+<span class="highlight">> RAG 检索增强生成</span>
+  基于向量数据库搭建知识库问答系统
+  文档切片、Embedding、语义检索、重排序全链路
+
+<span class="highlight">> AI 工具链</span>
+  LangChain / LlamaIndex / Ollama / Streamlit
+  模型微调（LoRA）、量化部署`;
+        },
+
+        infra() { return commands.k8s(); },
+
+        k8s() {
+            return `
+<span class="highlight">> Kubernetes</span>
+  生产级 K8s 集群部署与运维，Helm / ArgoCD / GitOps
+  Prometheus + Grafana 监控，日志采集与分析
+
+<span class="highlight">> Ceph 分布式存储</span>
+  集群搭建、调优与日常运维
+  RBD 块存储 / CephFS 文件系统 / RGW 对象存储
+
+<span class="highlight">> 其他</span>
+  Ansible / Terraform / Docker / Nginx / Jenkins`;
         },
 
         skills() {
-            return 'JavaScript / React / Node.js / Python / Git / Docker<br>详见上方 <span class="dim">$ cat skills.txt</span> 区块';
+            return 'LLM 应用 / Prompt Engineering / RAG / Python<br>Kubernetes / Ceph / Docker / Linux<br>JavaScript / React / Node.js / Git<br>详见上方 <span class="dim">$ cat skills.txt</span> 区块';
         },
 
         projects() {
@@ -142,7 +174,7 @@
         },
 
         contact() {
-            return `email:  luhong123@gmail.com<br>github: <a href="https://github.com/luhong123" target="_blank">github.com/luhong123</a>`;
+            return `✉️ Email:  <a href="mailto:ye33445200@qq.com">ye33445200@qq.com</a><br>🐙 GitHub: <a href="https://github.com/luhong123" target="_blank">github.com/luhong123</a>`;
         },
 
         clear() {
@@ -152,7 +184,7 @@
 
         banner() {
             const el = document.querySelector('.banner');
-            return el ? `<pre style="color:#00ff41;font-size:11px;line-height:1.1;text-shadow:0 0 10px rgba(0,255,65,0.3)">${escHtml(el.textContent)}</pre>` : 'banner not found';
+            return el ? `<pre style="color:#00ff41;font-size:10px;line-height:1.1;text-shadow:0 0 20px rgba(0,255,65,0.3)">${escHtml(el.textContent)}</pre>` : 'banner not found';
         },
 
         date() {
@@ -164,7 +196,10 @@
         }
     };
 
-    // 提取所有命令名用于 Tab 补全
+    // 别名
+    commands.ceph = commands.k8s;
+    commands.docker = commands.k8s;
+
     const cmdNames = Object.keys(commands);
 
     function escHtml(str) {
@@ -177,14 +212,13 @@
         div.className = 'cmd-output' + (isError ? ' error' : '');
         div.innerHTML = html;
         output.appendChild(div);
-        // 确保新输出不被固定栏遮挡
         div.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
 
     function addCmdLine(cmd) {
         const div = document.createElement('div');
         div.className = 'cmd-line';
-        div.innerHTML = `<span class="prompt">$</span> <span class="typed-cmd">${escHtml(cmd)}</span>`;
+        div.innerHTML = `<span class="prompt">root@xiaoming:~$</span> <span class="typed-cmd">${escHtml(cmd)}</span>`;
         output.appendChild(div);
     }
 
@@ -242,7 +276,6 @@
     });
 
     // ========== 焦点管理 ==========
-    // 点终端任意位置聚焦（但允许选中文字和点链接）
     terminalEl.addEventListener('click', function(e) {
         const tag = e.target.tagName;
         if (tag !== 'A' && tag !== 'INPUT') {
@@ -250,24 +283,17 @@
         }
     });
 
-    // 只在点击终端外部时尝试回焦（终端内自由操作）
-    document.addEventListener('click', function(e) {
-        if (!terminalEl.contains(e.target)) {
-            // 用户在终端外点击，不回焦
-            return;
-        }
-    });
-
     input.focus();
 
     // ========== 启动欢迎语 ==========
     const motd = `╔══════════════════════════════════════════╗
-║  Welcome to Xiao Ming's Terminal       ║
-║  Type <span style="color:#58a6ff">help</span> to see available commands  ║
+║  🔐 Welcome to Xiao Ming's Terminal     ║
+║  AI + DevOps + Full Stack Developer     ║
+║  Type <span style="color:#58a6ff">help</span> to see available commands   ║
 ╚══════════════════════════════════════════╝`;
 
     setTimeout(() => {
         addCmdLine('motd');
         addOutput(motd);
-    }, 3500); // 等打字机动画差不多结束
+    }, 5000); // 等打字机结束
 })();

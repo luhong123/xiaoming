@@ -1,5 +1,5 @@
 /* ============================================
-   终端极客风 — 个人主页样式
+   终端黑客风 — 个人主页样式 v2
    ============================================ */
 
 *, *::before, *::after {
@@ -9,8 +9,9 @@
 }
 
 :root {
-    --bg: #0d1117;
+    --bg: #0a0a0a;
     --green: #00ff41;
+    --green-bright: #39ff14;
     --green-dim: #00cc34;
     --green-dark: rgba(0, 255, 65, 0.12);
     --text: #c9d1d9;
@@ -18,7 +19,9 @@
     --prompt-color: #00ff41;
     --cmd-color: #58a6ff;
     --highlight: #ff7b72;
+    --cyan: #39ff14;
     --white: #e6edf3;
+    --title-bg: #1a1a1a;
     --font: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
     --font-size: 15px;
     --line-height: 1.65;
@@ -40,6 +43,32 @@ body {
     padding: 0;
 }
 
+/* ========== CRT 扫描线 ========== */
+#scanlines {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.06) 2px,
+        rgba(0, 0, 0, 0.06) 4px
+    );
+}
+
+/* ========== 暗角 ========== */
+#vignette {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
+}
+
 /* ========== Matrix 背景 ========== */
 #matrix {
     position: fixed;
@@ -48,33 +77,78 @@ body {
     width: 100%;
     height: 100%;
     z-index: 0;
-    opacity: 0.15;
+    opacity: 0.22;
     pointer-events: none;
 }
 
-/* ========== 终端容器 ========== */
-#terminal {
+/* ========== 终端窗口外框 ========== */
+#terminal-window {
     position: relative;
     z-index: 1;
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 40px 24px 100px;
-    min-height: 100vh;
+    max-width: 860px;
+    margin: 24px auto 0;
+    border: 1px solid rgba(0, 255, 65, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow:
+        0 0 30px rgba(0, 255, 65, 0.06),
+        inset 0 0 30px rgba(0, 255, 65, 0.02);
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(2px);
 }
 
-/* ========== Banner ASCII Art ========== */
-.banner {
-    color: var(--green);
-    font-size: clamp(9px, 2vw, 13px);
-    line-height: 1.2;
-    margin-bottom: 12px;
-    white-space: pre;
-    overflow-x: auto;
-    text-shadow: 0 0 10px rgba(0, 255, 65, 0.4);
+.title-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--title-bg);
+    border-bottom: 1px solid rgba(0, 255, 65, 0.1);
     user-select: none;
 }
 
-/* ========== Tagline 打字区域 ========== */
+.title-bar-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot.red    { background: #ff5f56; box-shadow: 0 0 4px rgba(255,95,86,0.4); }
+.dot.yellow { background: #ffbd2e; box-shadow: 0 0 4px rgba(255,189,46,0.4); }
+.dot.green  { background: #27c93f; box-shadow: 0 0 4px rgba(39, 201, 63,0.4); }
+
+.title-bar-text {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-left: 8px;
+}
+
+/* ========== 终端内容 ========== */
+#terminal {
+    padding: 28px 24px 110px;
+    min-height: calc(100vh - 130px);
+}
+
+/* ========== Banner ========== */
+.banner {
+    color: var(--green);
+    font-size: clamp(8px, 1.8vw, 12px);
+    line-height: 1.15;
+    margin-bottom: 10px;
+    white-space: pre;
+    overflow-x: auto;
+    text-shadow:
+        0 0 5px rgba(0, 255, 65, 0.5),
+        0 0 20px rgba(0, 255, 65, 0.2);
+    user-select: none;
+}
+
+/* ========== Tagline ========== */
 .tagline {
     margin-bottom: 28px;
     font-size: 15px;
@@ -82,10 +156,7 @@ body {
     min-height: 1.5em;
 }
 
-.tagline .prompt {
-    color: var(--prompt-color);
-    margin-right: 4px;
-}
+.tagline .prompt { color: var(--prompt-color); margin-right: 4px; }
 
 .tagline .cursor {
     color: var(--green);
@@ -97,26 +168,62 @@ body {
     50% { opacity: 0; }
 }
 
+/* ========== Glitch 文字 ========== */
+.glitch-text {
+    position: relative;
+    color: var(--highlight);
+}
+
+.glitch-text::before,
+.glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+}
+
+.glitch-text::before {
+    color: #0ff;
+    z-index: -1;
+    animation: glitch-blue 0.3s infinite;
+}
+.glitch-text::after {
+    color: #f0f;
+    z-index: -2;
+    animation: glitch-pink 0.3s infinite reverse;
+}
+
+@keyframes glitch-blue {
+    0%, 100% { transform: none; }
+    33% { transform: translate(-1px, 1px); }
+    66% { transform: translate(1px, -1px); }
+}
+
+@keyframes glitch-pink {
+    0%, 100% { transform: none; }
+    33% { transform: translate(1px, -1px); }
+    66% { transform: translate(-1px, 1px); }
+}
+
 /* ========== 内容区块 ========== */
 .block {
-    margin-top: 20px;
+    margin-top: 22px;
     margin-bottom: 4px;
     font-size: 14px;
 }
 
-.block .prompt {
-    color: var(--prompt-color);
-    margin-right: 6px;
-}
+.block .prompt { color: var(--prompt-color); margin-right: 6px; }
+.block .cmd   { color: var(--cmd-color); }
 
-.block .cmd {
-    color: var(--cmd-color);
-}
+.highlight-block { margin-top: 28px; }
 
 /* ========== 输出内容 ========== */
 .output {
     color: var(--text);
-    padding: 4px 0 4px 18px;
+    padding: 6px 0 6px 18px;
     margin-bottom: 4px;
     font-size: 14px;
     white-space: pre-wrap;
@@ -131,6 +238,7 @@ body {
 
 .output a:hover {
     text-decoration: underline;
+    text-shadow: 0 0 6px rgba(88, 166, 255, 0.5);
 }
 
 .output .highlight {
@@ -142,17 +250,27 @@ body {
     font-size: 13px;
 }
 
+/* ========== 技能分类标题 ========== */
+.skill-category {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 10px 0 6px;
+    padding-left: 2px;
+}
+
+.skill-category:first-child { margin-top: 0; }
+
 /* ========== 技能条 ========== */
 .skills .skill-row {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 6px 0;
+    margin: 5px 0;
     white-space: normal;
 }
 
 .skill-name {
-    width: 80px;
+    width: 88px;
     flex-shrink: 0;
     color: var(--text);
     font-size: 13px;
@@ -162,16 +280,16 @@ body {
 .bar {
     flex: 1;
     height: 14px;
-    background: rgba(0, 255, 65, 0.08);
-    border: 1px solid rgba(0, 255, 65, 0.18);
+    background: rgba(0, 255, 65, 0.06);
+    border: 1px solid rgba(0, 255, 65, 0.15);
     border-radius: 2px;
     overflow: hidden;
 }
 
 .bar .fill {
     height: 100%;
-    background: var(--green);
-    box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+    background: linear-gradient(90deg, var(--green), var(--green-bright));
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.35);
     border-radius: 1px;
     transition: width 0.8s ease;
 }
@@ -205,31 +323,31 @@ body {
     box-shadow: 0 0 12px rgba(0, 255, 65, 0.08);
 }
 
-.project-icon {
-    font-size: 18px;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
+.project-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.project strong { color: var(--white); }
 
-.project strong {
-    color: var(--white);
-}
-
-/* ========== 联系信息 JSON ========== */
-.contact-info {
-    color: var(--text);
+/* ========== 联系我专区 ========== */
+.contact-section {
+    color: var(--green-bright);
     font-size: 13px;
-    line-height: 2;
+    line-height: 1.8;
+    border-left-color: rgba(255, 123, 114, 0.25);
+    background: rgba(255, 123, 114, 0.02);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    text-shadow: 0 0 2px rgba(57, 255, 20, 0.15);
 }
 
-.contact-info .key {
-    color: var(--cmd-color);
+.contact-section a {
+    color: var(--highlight);
+}
+
+.contact-section a:hover {
+    text-shadow: 0 0 8px rgba(255, 123, 114, 0.6);
 }
 
 /* ========== 交互输出区 ========== */
-#interactive-output {
-    margin-top: 4px;
-}
+#interactive-output { margin-top: 6px; }
 
 #interactive-output .cmd-line {
     margin: 8px 0 4px;
@@ -251,34 +369,38 @@ body {
     margin-bottom: 8px;
     font-size: 14px;
     white-space: pre-wrap;
+    border-left: 1px solid var(--green-dark);
+    margin-left: 6px;
 }
 
 #interactive-output .cmd-output.error {
     color: var(--highlight);
+    border-left-color: rgba(255, 123, 114, 0.3);
 }
 
 /* ========== 命令输入行 ========== */
 #input-line {
     position: fixed;
     bottom: 0;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 16px 24px;
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-    background: rgba(13, 17, 23, 0.95);
-    border-top: 1px solid rgba(0, 255, 65, 0.12);
+    padding: 14px 20px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+    background: rgba(10, 10, 10, 0.96);
+    border-top: 1px solid rgba(0, 255, 65, 0.15);
     z-index: 10;
-    max-width: 820px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 860px;
 }
 
 #input-line .prompt {
     color: var(--prompt-color);
-    font-size: 15px;
+    font-size: 14px;
     flex-shrink: 0;
+    white-space: nowrap;
 }
 
 #cmd-input {
@@ -288,19 +410,19 @@ body {
     outline: none;
     color: var(--text);
     font-family: var(--font);
-    font-size: 15px;
+    font-size: 14px;
     caret-color: transparent;
 }
 
 #cmd-input::placeholder {
     color: var(--text-dim);
-    opacity: 0.5;
+    opacity: 0.35;
 }
 
 .cursor-inline {
-    color: var(--green);
+    color: var(--green-bright);
     animation: blink 1s step-end infinite;
-    font-size: 15px;
+    font-size: 14px;
     flex-shrink: 0;
     user-select: none;
 }
@@ -314,72 +436,59 @@ body {
     line-height: 1.8;
 }
 
-.help-table .h-cmd {
-    color: var(--cmd-color);
-}
-
-.help-table .h-desc {
-    color: var(--text-dim);
-}
+.help-table .h-cmd { color: var(--cmd-color); }
+.help-table .h-desc { color: var(--text-dim); }
 
 /* ========== 滚动条 ========== */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: rgba(0, 255, 65, 0.2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 65, 0.4); }
-html { scrollbar-color: rgba(0, 255, 65, 0.2) var(--bg); scrollbar-width: thin; }
+::-webkit-scrollbar-thumb { background: rgba(0, 255, 65, 0.15); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 65, 0.3); }
+html { scrollbar-color: rgba(0, 255, 65, 0.15) var(--bg); scrollbar-width: thin; }
 
-/* 底部留出足够空间，避免内容被固定输入栏遮挡 */
-#terminal::after { content: ''; display: block; height: 60px; }
+/* 底部留空 */
+#terminal::after { content: ''; display: block; height: 80px; }
 
 /* ========== 响应式 ========== */
 @media (max-width: 600px) {
     :root { --font-size: 14px; }
 
+    #terminal-window {
+        margin: 0;
+        border-radius: 0;
+        border: none;
+    }
+
+    .title-bar { padding: 8px 12px; }
+    .title-bar-text { font-size: 10px; }
+    .dot { width: 10px; height: 10px; }
+
     #terminal {
-        padding: 24px 12px 90px;
+        padding: 20px 12px 100px;
     }
 
-    .banner {
-        font-size: 7px;
-    }
+    .banner { font-size: 5.5px; }
+    .tagline { font-size: 13px; }
+    .output { font-size: 13px; padding-left: 10px; }
 
-    .tagline {
-        font-size: 13px;
-    }
+    .skill-name { width: 72px; font-size: 11px; }
+    .bar { height: 10px; }
+    .pct { width: 28px; font-size: 10px; }
 
-    .output {
-        font-size: 13px;
-        padding-left: 10px;
-    }
-
-    .skill-name {
-        width: 60px;
-        font-size: 11px;
-    }
-
-    .bar {
-        height: 10px;
-    }
-
-    .pct {
-        width: 28px;
-        font-size: 10px;
-    }
+    .contact-section { font-size: 12px; padding: 10px 12px; }
 
     #input-line {
-        padding: 12px 12px;
+        padding: 12px;
         padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
+    #input-line .prompt { font-size: 12px; }
+    #cmd-input { font-size: 13px; }
+
+    .glitch-text::before,
+    .glitch-text::after { display: none; }
 }
 
 @media (max-width: 400px) {
-    .banner {
-        font-size: 5.5px;
-    }
-
-    .skill-name {
-        width: 50px;
-        font-size: 10px;
-    }
+    .banner { font-size: 4.5px; }
+    .skill-name { width: 60px; font-size: 10px; }
 }

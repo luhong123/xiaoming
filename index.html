@@ -3,23 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Xiao Ming — Full Stack Developer. Terminal-style personal homepage.">
+    <meta name="description" content="Xiao Ming — AI + DevOps + Full Stack Developer. Terminal-style personal homepage.">
     <meta property="og:title" content="Xiao Ming | Terminal">
-    <meta property="og:description" content="Full Stack Developer — Terminal-style personal homepage">
+    <meta property="og:description" content="AI + DevOps + Full Stack Developer — 终端风格个人主页">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://luhong123.github.io/xiaoming/">
     <meta name="twitter:card" content="summary">
-    <meta name="theme-color" content="#0d1117">
+    <meta name="theme-color" content="#0a0a0a">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💻</text></svg>">
     <title>Xiao Ming | Terminal</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 背景层 -->
     <canvas id="matrix"></canvas>
+    <div id="scanlines"></div>
+    <div id="vignette"></div>
 
-    <div id="terminal">
-        <!-- 固定内容区（含banner） -->
-        <div id="static-content">
+    <!-- 终端窗口 -->
+    <div id="terminal-window">
+        <div class="title-bar">
+            <span class="title-bar-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+            </span>
+            <span class="title-bar-text">root@xiaoming:~</span>
+        </div>
+
+        <div id="terminal">
+            <div id="static-content">
+
 <pre class="banner">
  ██╗  ██╗██╗ █████╗  ██████╗
  ╚██╗██╔╝██║██╔══██╗██╔═══██╗
@@ -32,51 +46,106 @@
  ██╔████╔██║██║██╔██╗ ██║██║  ███╗
  ██║╚██╔╝██║██║██║╚██╗██║██║   ██║
  ██║ ╚═╝ ██║██║██║ ╚████║╚██████╔╝
- ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
-</pre>
-            <div class="tagline"><span class="prompt">></span> <span id="typing-text"></span><span class="cursor">█</span></div>
-            <div class="block"><span class="prompt">$</span> <span class="cmd">whoami</span></div>
-            <div class="output">你好，我是 <span class="highlight">小明</span> (Xiao Ming)
-一个热爱技术的全栈开发者，专注于 Web 开发和开源项目。
-喜欢用代码创造实用工具，探索有趣的技术方案。</div>
-            <div class="block"><span class="prompt">$</span> <span class="cmd">cat skills.txt</span></div>
-            <div class="output skills">
-                <div class="skill-row"><span class="skill-name">JavaScript</span> <span class="bar"><span class="fill" style="width:90%"></span></span> <span class="pct">90%</span></div>
-                <div class="skill-row"><span class="skill-name">React</span>     <span class="bar"><span class="fill" style="width:80%"></span></span> <span class="pct">80%</span></div>
-                <div class="skill-row"><span class="skill-name">Node.js</span>   <span class="bar"><span class="fill" style="width:75%"></span></span> <span class="pct">75%</span></div>
-                <div class="skill-row"><span class="skill-name">Python</span>    <span class="bar"><span class="fill" style="width:70%"></span></span> <span class="pct">70%</span></div>
-                <div class="skill-row"><span class="skill-name">Git</span>       <span class="bar"><span class="fill" style="width:85%"></span></span> <span class="pct">85%</span></div>
-                <div class="skill-row"><span class="skill-name">Docker</span>    <span class="bar"><span class="fill" style="width:60%"></span></span> <span class="pct">60%</span></div>
-            </div>
-            <div class="block"><span class="prompt">$</span> <span class="cmd">ls projects/</span></div>
-            <div class="output">
-                <a href="https://luhong123.github.io/baby-sleep-tracker/" target="_blank" class="project">
-                    <span class="project-icon">📁</span>
-                    <div><strong>baby-sleep-tracker</strong><br><span class="dim">宝宝睡眠记录 PWA — 追踪宝宝每日睡眠，支持统计图表与数据管理</span></div>
-                </a>
-                <div class="project">
-                    <span class="project-icon">📁</span>
-                    <div><strong>xiaoming</strong><br><span class="dim">终端风格个人主页 — 你正在看的就是它</span></div>
+ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝</pre>
+                <div class="tagline"><span class="prompt">></span> <span id="typing-text"></span><span class="cursor">█</span></div>
+
+                <!-- whoami -->
+                <div class="block"><span class="prompt">$</span> <span class="cmd">whoami</span></div>
+                <div class="output">你好，我是 <span class="highlight">小明</span> (Xiao Ming)
+一个全栈开发者，专注于 <span class="glitch-text" data-text="AI">AI</span> 应用、云原生基础设施和 Web 开发。
+喜欢用代码解决真实问题，探索前沿技术。</div>
+
+                <!-- Skills -->
+                <div class="block"><span class="prompt">$</span> <span class="cmd">cat skills.txt</span></div>
+                <div class="output skills">
+                    <div class="skill-category"># --- AI / ML ---</div>
+                    <div class="skill-row"><span class="skill-name">LLM 应用</span> <span class="bar"><span class="fill" style="width:85%"></span></span> <span class="pct">85%</span></div>
+                    <div class="skill-row"><span class="skill-name">Prompt Eng</span> <span class="bar"><span class="fill" style="width:90%"></span></span> <span class="pct">90%</span></div>
+                    <div class="skill-row"><span class="skill-name">RAG</span>       <span class="bar"><span class="fill" style="width:80%"></span></span> <span class="pct">80%</span></div>
+                    <div class="skill-row"><span class="skill-name">Python</span>    <span class="bar"><span class="fill" style="width:82%"></span></span> <span class="pct">82%</span></div>
+                    <div class="skill-category"># --- Infrastructure ---</div>
+                    <div class="skill-row"><span class="skill-name">Kubernetes</span> <span class="bar"><span class="fill" style="width:80%"></span></span> <span class="pct">80%</span></div>
+                    <div class="skill-row"><span class="skill-name">Ceph</span>      <span class="bar"><span class="fill" style="width:75%"></span></span> <span class="pct">75%</span></div>
+                    <div class="skill-row"><span class="skill-name">Docker</span>    <span class="bar"><span class="fill" style="width:85%"></span></span> <span class="pct">85%</span></div>
+                    <div class="skill-row"><span class="skill-name">Linux</span>     <span class="bar"><span class="fill" style="width:88%"></span></span> <span class="pct">88%</span></div>
+                    <div class="skill-category"># --- Web ---</div>
+                    <div class="skill-row"><span class="skill-name">JavaScript</span> <span class="bar"><span class="fill" style="width:90%"></span></span> <span class="pct">90%</span></div>
+                    <div class="skill-row"><span class="skill-name">React</span>     <span class="bar"><span class="fill" style="width:80%"></span></span> <span class="pct">80%</span></div>
+                    <div class="skill-row"><span class="skill-name">Node.js</span>   <span class="bar"><span class="fill" style="width:78%"></span></span> <span class="pct">78%</span></div>
+                    <div class="skill-row"><span class="skill-name">Git</span>       <span class="bar"><span class="fill" style="width:90%"></span></span> <span class="pct">90%</span></div>
                 </div>
-            </div>
-            <div class="block"><span class="prompt">$</span> <span class="cmd">cat contact.json</span></div>
-            <div class="output contact-info">
-                {
-                <span>  "email":   "<a href="mailto:luhong123@gmail.com">luhong123@gmail.com</a>",</span>
-                <span>  "github":  "<a href="https://github.com/luhong123" target="_blank">github.com/luhong123</a>",</span>
-                <span>  "blog":    "<a href="#" target="_blank">coming soon</a>"</span>
-                }
-            </div>
-        </div>
 
-        <!-- 交互命令输出区 -->
-        <div id="interactive-output"></div>
+                <!-- AI Experience -->
+                <div class="block"><span class="prompt">$</span> <span class="cmd">cat ai_experience.txt</span></div>
+                <div class="output">
+<span class="highlight">> LLM 应用开发</span>
+  熟悉 OpenAI / Claude API，开发过智能对话、代码助手等应用
+  掌握 Prompt Engineering、Function Calling、Agent 编排
 
-        <!-- 命令输入行 -->
-        <div id="input-line">
-            <span class="prompt">$</span>
-            <input type="text" id="cmd-input" spellcheck="false" autocomplete="off" autocapitalize="off">
-            <span class="cursor-inline">█</span>
+<span class="highlight">> RAG 检索增强生成</span>
+  基于向量数据库（Chroma / Pinecone）搭建知识库问答系统
+  文档切片、Embedding、语义检索、重排序全链路实践
+
+<span class="highlight">> AI 工具链</span>
+  LangChain / LlamaIndex / Streamlit / Gradio
+  模型微调（LoRA）、量化部署、本地模型运行（Ollama）</div>
+
+                <!-- Infrastructure -->
+                <div class="block"><span class="prompt">$</span> <span class="cmd">cat infrastructure.txt</span></div>
+                <div class="output">
+<span class="highlight">> Kubernetes</span>
+  生产级 K8s 集群部署与运维，熟悉 Pod / Service / Ingress / HPA
+  Helm Chart 编写，CI/CD（GitOps + ArgoCD），日志监控（Prometheus + Grafana）
+
+<span class="highlight">> Ceph 分布式存储</span>
+  Ceph 集群搭建、调优与日常运维
+  RBD 块存储 / CephFS 文件系统 / RGW 对象存储，性能调优与故障排查
+
+<span class="highlight">> 其他运维技能</span>
+  Ansible 自动化 / Terraform IaC / Nginx / Jenkins
+   shell 脚本自动化，服务器安全加固</div>
+
+                <!-- Projects -->
+                <div class="block"><span class="prompt">$</span> <span class="cmd">ls projects/</span></div>
+                <div class="output">
+                    <a href="https://luhong123.github.io/baby-sleep-tracker/" target="_blank" class="project">
+                        <span class="project-icon">📁</span>
+                        <div><strong>baby-sleep-tracker</strong><br><span class="dim">宝宝睡眠记录 PWA — 追踪每日睡眠，统计图表 + 数据管理</span></div>
+                    </a>
+                    <div class="project">
+                        <span class="project-icon">📁</span>
+                        <div><strong>xiaoming</strong><br><span class="dim">终端风格个人主页 — 你正在看的就是它</span></div>
+                    </div>
+                </div>
+
+                <!-- 联系我 -->
+                <div class="block highlight-block"><span class="prompt">$</span> <span class="cmd" style="color:#ff7b72">cat contact_me.txt</span></div>
+                <div class="output contact-section">
+╔══════════════════════════════════════════════════════╗
+║              📬 联系我 / Contact Me                  ║
+╠══════════════════════════════════════════════════════╣
+║                                                      ║
+║  ✉️  Email                                            ║
+║     <a href="mailto:ye33445200@qq.com">ye33445200@qq.com</a>                          ║
+║                                                      ║
+║  🐙 GitHub                                           ║
+║     <a href="https://github.com/luhong123" target="_blank">github.com/luhong123</a>                         ║
+║                                                      ║
+║  💬 欢迎交流 AI、云原生、开源相关的任何话题！          ║
+║                                                      ║
+╚══════════════════════════════════════════════════════╝</div>
+
+            </div>
+
+            <!-- 交互命令输出区 -->
+            <div id="interactive-output"></div>
+
+            <!-- 命令输入行 -->
+            <div id="input-line">
+                <span class="prompt">root@xiaoming:~$</span>
+                <input type="text" id="cmd-input" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="输入 help 查看可用命令...">
+                <span class="cursor-inline">█</span>
+            </div>
         </div>
     </div>
 
