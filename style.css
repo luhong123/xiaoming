@@ -589,7 +589,25 @@ body::before {
 }
 .email-close:hover { color: var(--text); }
 
-/* ========== Responsive ========== */
+/* ========== 雷姆 ========== */
+.rem-chan {
+    position: fixed;
+    bottom: 40px; right: 30px;
+    z-index: 50;
+    pointer-events: none;
+    transition: transform 0.15s ease-out;
+    opacity: 0.92;
+    filter: drop-shadow(0 4px 20px rgba(59,130,246,0.15));
+}
+
+@media (max-width: 600px) {
+    .rem-chan svg { width: 80px; height: 112px; }
+    .rem-chan { bottom: 30px; right: 15px; }
+}
+
+@media (min-width: 1024px) {
+    .rem-chan svg { width: 140px; height: 196px; }
+}
 @media (max-width: 600px) {
     .nav { padding: 8px 10px; }
     .nav-inner { gap: 12px; padding: 6px 8px 6px 14px; }
