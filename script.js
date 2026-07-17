@@ -85,3 +85,17 @@ document.addEventListener('keydown', (e) => {
         document.getElementById('email-modal').classList.remove('show');
     }
 });
+
+// ============================================
+// 标签页标题彩蛋
+// ============================================
+let originalTitle = document.title;
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        originalTitle = document.title;
+        document.title = '(oﾟvﾟ)ノ 别走呀~';
+    } else {
+        document.title = '(◕‿◕)♪ 你回来啦！';
+        setTimeout(() => { document.title = originalTitle; }, 2000);
+    }
+});
